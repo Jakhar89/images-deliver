@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImageCDN Hub — Host & Deliver Images via jsDelivr</title>
+  <meta name="description" content="A premium image hosting dashboard powered by jsDelivr CDN. Host images on GitHub and serve them globally at lightning speed directly in your website code." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Ambient Background Orbs -->
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
+<div class="orb orb-3" aria-hidden="true"></div>
+
+<div class="app-shell">
+
+  <!-- ── Navbar ───────────────────────────────────────── -->
+  <nav class="navbar" role="banner">
+    <div class="navbar-brand">
+      <div class="logo-icon" aria-hidden="true">🖼️</div>
+      <span class="brand-name">ImageCDN<span class="brand-tag">Hub</span></span>
+    </div>
+    <div class="navbar-actions">
+      <span class="badge-pill">jsDelivr Powered</span>
+      <button class="btn-icon" id="themeToggle" title="Toggle theme" aria-label="Toggle light/dark theme">🌙</button>
+      <button class="btn-icon" id="helpBtn" title="GitHub Setup Guide" aria-label="Open GitHub setup guide">❓</button>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ──────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- ── Sidebar ─────────────────────────────────────── -->
+    <aside class="sidebar" role="complementary" aria-label="CDN Configuration">
+
+      <!-- Repo Config -->
+      <section>
+        <p class="panel-title">⚙️ CDN Configuration</p>
+        <div class="config-card">
+          <div class="form-group">
+            <label for="ghUsername">GitHub Username</label>
+            <input type="text" id="ghUsername" placeholder="your-username" value="your-username" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="ghRepo">Repository Name</label>
+            <input type="text" id="ghRepo" placeholder="images-deliver" value="images-deliver" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="ghBranch">Branch</label>
+            <input type="text" id="ghBranch" placeholder="main" value="main" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label>CDN Platform</label>
+            <div class="platform-selector" role="radiogroup" aria-label="Select CDN platform">
+              <button class="platform-btn active" id="btnJsdelivr" data-platform="jsdelivr" role="radio" aria-checked="true">
+                ⚡ jsDelivr
+              </button>
+              <button class="platform-btn" id="btnStatically" data-platform="statically" role="radio" aria-checked="false">
+                🌐 Statically
+              </button>
+              <button class="platform-btn" id="btnGhpages" data-platform="ghpages" role="radio" aria-checked="false">
+                📄 GH Pages
+              </button>
+              <button class="platform-btn" id="btnRaw" data-platform="raw" role="radio" aria-checked="false">
+                🔗 Raw URL
+              </button>
+            </div>
+          </div>
+          <label>Base CDN URL Preview</label>
+          <div class="url-preview" id="urlPreview" role="status" aria-live="polite">
+            <span id="urlPreviewText">https://cdn.jsdelivr.net/gh/your-username/images-deliver@main/images/</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section>
+        <p class="panel-title">📊 Repository Stats</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-value stat-accent" id="statImages">5</span>
+            <span class="stat-label">Images</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value stat-accent-2">∞</span>
+            <span class="stat-label">CDN Nodes</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value stat-success">Free</span>
+            <span class="stat-label">Bandwidth</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value stat-accent-3">0ms</span>
+            <span class="stat-label">Setup Time</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CDN Tip -->
+      <div class="tip-card" role="note">
+        <h4>💡 Pro Tip</h4>
+        <p>After pushing to GitHub, use <strong>versioned tags</strong> (e.g. <code>@1.0.0</code>) instead of branch names for long-term cache performance on jsDelivr.</p>
+      </div>
+
+    </aside>
+
+    <!-- ── Gallery Area ────────────────────────────────── -->
+    <div class="gallery-area" role="main">
+
+      <!-- Toolbar -->
+      <div class="gallery-toolbar">
+        <div class="toolbar-left">
+          <div class="section-nav" role="tablist" aria-label="Main navigation">
+            <button class="section-nav-btn active" id="navGallery" role="tab" aria-selected="true" aria-controls="gallerySection">
+              🖼️ Gallery
+            </button>
+            <button class="section-nav-btn" id="navGuide" role="tab" aria-selected="false" aria-controls="guideSection">
+              📖 Guide
+            </button>
+          </div>
+          <div class="search-box" id="galleryControls">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search images…" aria-label="Search images" autocomplete="off" />
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <div class="filter-tabs" role="group" aria-label="Filter by type" id="filterTabsGroup">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="background">Backgrounds</button>
+            <button class="filter-tab" data-filter="avatar">Avatars</button>
+            <button class="filter-tab" data-filter="workspace">Workspace</button>
+          </div>
+          <div class="view-toggle" role="group" aria-label="View mode">
+            <button class="view-btn active" id="gridViewBtn" title="Grid view" aria-label="Grid view">▦</button>
+            <button class="view-btn" id="listViewBtn" title="List view" aria-label="List view">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Section -->
+      <div class="gallery-scroll" id="gallerySection" role="tabpanel" aria-labelledby="navGallery">
+        <div class="image-grid" id="imageGrid" role="list">
+          <!-- Cards injected by app.js -->
+        </div>
+      </div>
+
+      <!-- Guide Section (hidden by default) -->
+      <div class="gallery-scroll" id="guideSection" role="tabpanel" aria-labelledby="navGuide" style="display:none;">
+        <div class="guide-hero">
+          <h2>Host Images. <span>Ship Faster.</span></h2>
+          <p>Drop your images into this repository, commit and push to GitHub, and instantly serve them globally through jsDelivr's massive CDN network — free, fast, and forever cached.</p>
+        </div>
+
+        <div class="guide-grid">
+
+          <!-- How It Works -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">⚡</span> How jsDelivr Works</h3>
+            <p>jsDelivr proxies files directly from GitHub repositories and serves them from 750+ global PoP nodes with automatic caching and HTTP/2 support.</p>
+            <div class="url-structure">
+<span class="seg-cdn">https://cdn.jsdelivr.net/gh/</span><span class="seg-user">:user</span>/<span class="seg-repo">:repo</span><span class="seg-ver">@:version</span><span class="seg-path">/:path</span>
+
+<span class="seg-cdn">https://cdn.jsdelivr.net/gh/</span><span class="seg-user">jakhar</span>/<span class="seg-repo">images-deliver</span><span class="seg-ver">@main</span><span class="seg-path">/images/hero-cyberpunk.png</span>
+            </div>
+          </div>
+
+          <!-- How to Add Images -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">📤</span> How to Add New Images</h3>
+            <ol class="step-list">
+              <li>Add your image file to the <code>images/</code> folder in this repository.</li>
+              <li>Run <code>git add images/your-image.png</code></li>
+              <li>Commit: <code>git commit -m "add: new image"</code></li>
+              <li>Push: <code>git push origin main</code></li>
+              <li>Copy the CDN URL from the dashboard above — it's live in seconds!</li>
+            </ol>
+          </div>
+
+          <!-- HTML Usage -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">🌐</span> Use in HTML</h3>
+            <p>Reference the CDN URL directly inside an <code>&lt;img&gt;</code> tag or as a CSS <code>background-image</code>:</p>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-block-header">
+                <span class="code-lang">HTML</span>
+                <button class="copy-btn" data-code="html-example">📋 Copy</button>
+              </div>
+              <pre id="html-example">&lt;img
+  src="https://cdn.jsdelivr.net/gh/user/repo@main/images/hero.png"
+  alt="Hero image"
+  loading="lazy"
+/&gt;</pre>
+            </div>
+          </div>
+
+          <!-- React Usage -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">⚛️</span> Use in React / Next.js</h3>
+            <p>Import or inline the CDN URL as a constant for clean, maintainable code.</p>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-block-header">
+                <span class="code-lang">JSX</span>
+                <button class="copy-btn" data-code="react-example">📋 Copy</button>
+              </div>
+              <pre id="react-example">const CDN = "https://cdn.jsdelivr.net/gh/user/repo@main";
+
+export default function Hero() {
+  return (
+    &lt;img
+      src={`${CDN}/images/hero-cyberpunk.png`}
+      alt="Hero"
+    /&gt;
+  );
+}</pre>
+            </div>
+          </div>
+
+          <!-- CSS Usage -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">🎨</span> Use in CSS</h3>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-block-header">
+                <span class="code-lang">CSS</span>
+                <button class="copy-btn" data-code="css-example">📋 Copy</button>
+              </div>
+              <pre id="css-example">.hero {
+  background-image: url(
+    "https://cdn.jsdelivr.net/gh/user/repo@main/images/space-nebula.png"
+  );
+  background-size: cover;
+  background-position: center;
+}</pre>
+            </div>
+          </div>
+
+          <!-- Markdown / GitHub -->
+          <div class="guide-card">
+            <h3><span class="guide-icon">📝</span> Use in Markdown</h3>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-block-header">
+                <span class="code-lang">MD</span>
+                <button class="copy-btn" data-code="md-example">📋 Copy</button>
+              </div>
+              <pre id="md-example">![Hero Banner](https://cdn.jsdelivr.net/gh/user/repo@main/images/hero-cyberpunk.png)</pre>
+            </div>
+          </div>
+
+        </div><!-- /.guide-grid -->
+      </div><!-- /#guideSection -->
+
+    </div><!-- /.gallery-area -->
+  </div><!-- /.main-content -->
+</div><!-- /.app-shell -->
+
+<!-- ── Snippet Modal ──────────────────────────────────── -->
+<div class="modal-backdrop" id="snippetModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Image Snippets</h3>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-preview">
+      <img id="modalImg" src="" alt="Selected image preview" />
+    </div>
+    <div class="modal-body">
+      <div class="snippet-tabs" role="tablist" aria-label="Code snippet format">
+        <button class="snippet-tab active" data-snippet="html" role="tab">HTML &lt;img&gt;</button>
+        <button class="snippet-tab" data-snippet="css" role="tab">CSS bg</button>
+        <button class="snippet-tab" data-snippet="react" role="tab">React JSX</button>
+        <button class="snippet-tab" data-snippet="nextjs" role="tab">Next.js</button>
+        <button class="snippet-tab" data-snippet="markdown" role="tab">Markdown</button>
+        <button class="snippet-tab" data-snippet="raw" role="tab">Raw URL</button>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-lang" id="snippetLang">HTML</span>
+          <button class="copy-btn" id="copySnippetBtn">📋 Copy</button>
+        </div>
+        <pre id="snippetCode"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
